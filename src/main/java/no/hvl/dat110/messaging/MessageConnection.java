@@ -15,8 +15,6 @@ public class MessageConnection {
 	private DataInputStream inStream; // for reading bytes from the underlying TCP connection
 	private Socket socket; // socket for the underlying TCP connection
 	
-	private static MessageUtils messageUtils;
-
 	public MessageConnection(Socket socket) {
 
 		try {
@@ -61,14 +59,20 @@ public class MessageConnection {
 		// TODO - START
 		// read a segment from the input stream and decapsulate data into a Message
 		
-
 		try {
-			data = inStream.readAllBytes();
-			message = MessageUtils.decapsulate(data);
+			// Read the first byte to get the message length
+			int length = inStream.read();
+			if (length > 0) {
+				// Initialize the data array with the length
+				data = new byte[length];
+				// Read the message data
+				inStream.readFully(data, 0, length);
+				// Decapsulate the data into a message
+				message = MessageUtils.decapsulate(data);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		// TODO - END
 		
 		return message;

@@ -330,6 +330,7 @@ public class TestRPC {
 				try {
 
 					TestBooleanBooleanImpl boolboolimpl = new TestBooleanBooleanImpl((byte) 4, server);
+					server.register((byte) 4, boolboolimpl);
 
 					server.run();
 
