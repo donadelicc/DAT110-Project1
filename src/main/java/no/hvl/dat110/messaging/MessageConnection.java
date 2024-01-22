@@ -15,6 +15,8 @@ public class MessageConnection {
 	private DataInputStream inStream; // for reading bytes from the underlying TCP connection
 	private Socket socket; // socket for the underlying TCP connection
 	
+	private static MessageUtils messageUtils;
+
 	public MessageConnection(Socket socket) {
 
 		try {
@@ -34,13 +36,18 @@ public class MessageConnection {
 
 	public void send(Message message) {
 
-		byte[] data;
+		byte[] data; // data and segment are interchangeable here
 		
 		// TODO - START
 		// encapsulate the data contained in the Message and write to the output stream
 		
-		if (true)
-			throw new UnsupportedOperationException(TODO.method());
+		data = MessageUtils.encapsulate(message);
+
+		try {
+			outStream.write(data);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 			
 		// TODO - END
 
@@ -54,8 +61,13 @@ public class MessageConnection {
 		// TODO - START
 		// read a segment from the input stream and decapsulate data into a Message
 		
-		if (true)
-			throw new UnsupportedOperationException(TODO.method());
+
+		try {
+			data = inStream.readAllBytes();
+			message = MessageUtils.decapsulate(data);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		// TODO - END
 		
