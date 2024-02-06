@@ -56,28 +56,35 @@ public class MessageConnection {
 		Message message = null;
 		byte[] data;
 		
-		// TODO - START
-		// read a segment from the input stream and decapsulate data into a Message
-		
 		try {
 			// Read the first byte to get the message length
 			int length = inStream.read();
-			if (length > 0) {
-				// Initialize the data array with the length
+	
+			// Check for end-of-stream condition
+			if (length == -1) {
+				System.out.println("End of stream reached, no more data to read.");
+				// Optionally, throw an exception or handle this case as per your application logic
+			} else if (length > 0) {
+				// Ensure the length is within the expected range
 				data = new byte[length];
 				// Read the message data
 				inStream.readFully(data, 0, length);
 				// Decapsulate the data into a message
 				message = MessageUtils.decapsulate(data);
+			} else {
+				// Handle case where length is not within the valid range
+				System.out.println("Received length is not valid: " + length);
+				// Optionally, throw an exception or handle this case as per your application logic
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			// Optionally, handle this exception more gracefully, e.g., by logging or rethrowing as a custom exception
 		}
-		// TODO - END
 		
 		return message;
 		
 	}
+	
 
 	// close the connection by closing streams and the underlying socket	
 	public void close() {

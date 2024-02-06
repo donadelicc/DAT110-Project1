@@ -53,13 +53,16 @@ public class RPCServer {
 		   try {				
 				requestmsg = connection.receive();
 				rpcid = requestmsg.getData()[0];
-				
+
 				byte[] param = RPCUtils.decapsulate(requestmsg.getData());
 				RPCRemoteImpl method = services.get(rpcid);
 
 				byte[] reply = method.invoke(param);
+				// må jeg encapsulate her?
+				
 				replymsg = new Message(reply);
 				connection.send(replymsg);
+
 		   } catch (Exception e) {
 				e.printStackTrace();
 		   }
