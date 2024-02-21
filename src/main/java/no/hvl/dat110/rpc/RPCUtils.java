@@ -3,7 +3,6 @@ package no.hvl.dat110.rpc;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import no.hvl.dat110.TODO;
-import no.hvl.dat110.system.controller.Common;
 
 public class RPCUtils {
 	
@@ -14,39 +13,35 @@ public class RPCUtils {
 		// TODO - START
 		
 		// Encapsulate the rpcid and payload in a byte array according to the RPC message syntax / format
+		int a = payload != null ? payload.length: 0; //må sjekke om payload har innhold og lengded ikke er null
+		rpcmsg = new byte[a+1];
+		rpcmsg[0] = rpcid;
 
-		// Get the approppriate method id (Common.java)
-			// rpcid= Header
+		for (int i = 0; i < a ; i++) {
 
-		// Get the parameters (payload)
-			// Payload = parameter
-		
-		try {
-			rpcmsg = new byte[1 + payload.length];
-			rpcmsg[0] = rpcid;
-			System.arraycopy(payload, 0, rpcmsg, 1, payload.length);
-		} catch (Exception e) {
-			e.printStackTrace();
+			rpcmsg[i+1] = payload[i];
 		}
-	
+
 		// TODO - END
 		
 		return rpcmsg;
 	}
 	
 	public static byte[] decapsulate(byte[] rpcmsg) {
-		
+
 		byte[] payload = null;
 		
 		// TODO - START
 		
 		// Decapsulate the rpcid and payload in a byte array according to the RPC message syntax
-		
-		try {
-			payload = Arrays.copyOfRange(rpcmsg, 1, rpcmsg.length);
-		} catch (Exception e) {
-			e.printStackTrace();
+		int len = rpcmsg.length-1;
+		payload = new byte[len];
+
+		for (int i = 0; i < len; i++) {
+
+			payload[i] = rpcmsg[i+1];
 		}
+
 		// TODO - END
 		
 		return payload;
@@ -56,17 +51,12 @@ public class RPCUtils {
 	// convert String to byte array
 	public static byte[] marshallString(String str) {
 		
-		byte[] encoded = null;
-		
+		byte[] encoded = new byte[2]; //new byte[2]
+
 		// TODO - START 
 
-		// Create bytes representation of the message parameter
-		try {
-			encoded = str.getBytes("UTF-8");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+		encoded = str.getBytes();
+
 		// TODO - END
 		
 		return encoded;
@@ -75,55 +65,35 @@ public class RPCUtils {
 	// convert byte array to a String
 	public static String unmarshallString(byte[] data) {
 		
-		String decoded = null; 
-		
-		// TODO - START 
+		String decoded = null;
 
-		// Get the recieved essage/packet
-		// Take out ONLY the payload data from the segment
-		// Header provided the length of the payload data
-		
-		
-		try {			
-			decoded = new String(data, "UTF-8");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+		// TODO - START
+
+		decoded = new String(data); //new String(data)
+
 		// TODO - END
 		
 		return decoded;
 	}
 	
 	public static byte[] marshallVoid() {
-		
+
 		byte[] encoded = null;
-		
-		// TODO - START 
-		
-		
-		try {
-			encoded = new byte[0];
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-				
+
+		// TODO - START
+
+		//encoded = new byte[0];
+
 		// TODO - END
 		
-		return encoded;
-		
+		//return encoded;
+		return null;
 	}
 	
 	public static void unmarshallVoid(byte[] data) {
 		
 		// TODO
-		
-		try {
-			if (data.length != 0)
-				throw new Exception("Wrong data length");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 		
 	}
 
@@ -153,16 +123,15 @@ public class RPCUtils {
 	public static byte[] marshallInteger(int x) {
 		
 		byte[] encoded = null;
+
 		
-		// TODO - START 
+		// TODO - START
+
+		ByteBuffer byteBuffer = ByteBuffer.allocate(Integer.BYTES);
+		byteBuffer.putInt(x);
+		encoded = byteBuffer.array();
 		
-		
-		try {
-			encoded = ByteBuffer.allocate(4).putInt(x).array();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+
 		// TODO - END
 		
 		return encoded;
@@ -173,14 +142,13 @@ public class RPCUtils {
 		
 		int decoded = 0;
 		
-		// TODO - START 
-		
-		try {
-			decoded = ByteBuffer.wrap(data).getInt();
+		// TODO - START
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ByteBuffer intBuffer = ByteBuffer.wrap(data);
+
+		decoded = intBuffer.getInt();
+		
+
 		// TODO - END
 		
 		return decoded;

@@ -13,26 +13,29 @@ public class MessageUtils {
 
 	public static byte[] encapsulate(Message message) {
 		
-		byte[] segment = null;
+		byte[] segment = new byte[SEGMENTSIZE];
 		byte[] data;
-
-		// TODO
+		
+		// TODO - START
+		
 		// encapulate/encode the payload data of the message and form a segment
 		// according to the segment format for the messaging layer
 
-		// Set the segment length to 128 bytes
-		segment = new byte[SEGMENTSIZE];
-		// Get the message data
+		//data = new byte[message.getData().length];?
+
 		data = message.getData();
-		// Set the first byte of the segment to the length of the data --> the header
-		byte header = (byte) data.length;
-		segment[0] = header;
+		segment[0] = (byte)message.getData().length;
 
-		// Copy data into segment starting at index 1
-		System.arraycopy(data, 0, segment, 1, data.length);
+		for (int i = 0; i < data.length; i++) {
 
-		return segment;
+			segment[i+1] = data[i];
+		}
+		
+		//if (true)
+			//throw new UnsupportedOperationException(TODO.method());
+			
 		// TODO - END
+		return segment;
 		
 	}
 
@@ -43,16 +46,21 @@ public class MessageUtils {
 		// TODO - START
 		// decapsulate segment and put received payload data into a message
 
-		// Get the revieced message/packet
-		// Take out ONLY the payload data from the segment
-		// Header provided in the Message class
 
-		// Get the header
-		byte header = segment[0];
-		// Get the payoad
-		byte[] payload = Arrays.copyOfRange(segment, 1, 1+ header);
-		// Create a new message with the data
-		message = new Message(payload);
+
+		int length = segment[0];
+
+		byte[] data = new byte[length];
+
+		for (int i = 0; i < length; i++) {
+
+			data[i] = segment[i+1];
+		}
+
+		message = new Message(data);
+
+		//if (true)
+			//throw new UnsupportedOperationException(TODO.method());
 		
 		// TODO - END
 		

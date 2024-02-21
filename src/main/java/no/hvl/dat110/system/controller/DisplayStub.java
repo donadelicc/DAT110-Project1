@@ -5,24 +5,27 @@ import no.hvl.dat110.rpc.*;
 
 public class DisplayStub extends RPCLocalStub {
 
-	public DisplayStub(RPCClient rpcclient) {
-		super(rpcclient);
-	}
-	
-	public void write (String message) {
-		
-		// TODO - START
-		
-		// marshall parameter to write call (a string)
-		byte[] request = RPCUtils.marshallString(message);
-		
-		// acknowledge the call
-		byte[] response = rpcclient.call((byte)Common.WRITE_RPCID, request);
+    public DisplayStub(RPCClient rpcclient) {
+        super(rpcclient);
+    }
 
-		// unmarshall the return value from the call (an integer)
-		RPCUtils.unmarshallVoid(response);
-		
-		// TODO - END
-		
-	}
+    public void write(String message) {
+
+        // TODO - START
+
+        // implement marshalling, call and unmarshalling for write RPC method
+
+        byte[] request = RPCUtils.marshallString(message);
+
+        //byte[] response = rpcclient.call((byte)Common.READ_RPCID, request);
+
+        byte[] response = rpcclient.call((byte)Common.WRITE_RPCID, request);
+
+
+        RPCUtils.unmarshallString(response);
+
+
+        // TODO - END
+
+    }
 }

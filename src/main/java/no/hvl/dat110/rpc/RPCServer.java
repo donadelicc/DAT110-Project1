@@ -39,33 +39,26 @@ public class RPCServer {
 		while (!stop) {
 	    
 		   byte rpcid = 0;
-		   Message requestmsg, replymsg;
+
+		   Message requestmsg, replymsg = null;
 		   
 		   // TODO - START
 		   // - receive a Message containing an RPC request
+
+			requestmsg = connection.receive();
+
 		   // - extract the identifier for the RPC method to be invoked from the RPC request
-		   // - extract the method's parameter by decapsulating using the RPCUtils
-		   // - lookup the method to be invoked
-		   // - invoke the method and pass the param
-		   // - encapsulate return value 
-		   // - send back the message containing the RPC reply
-			
-		   try {				
-				requestmsg = connection.receive();
-				rpcid = requestmsg.getData()[0];
 
-				byte[] param = RPCUtils.decapsulate(requestmsg.getData());
-				RPCRemoteImpl method = services.get(rpcid);
+			rpcid = requestmsg.getData()[0];
 
-				byte[] reply = method.invoke(param);
-				// må jeg encapsulate her?
-				
-				replymsg = new Message(reply);
-				connection.send(replymsg);
+		   // - lookup the method to be invoke
+		   // - invoke the method
+			byte[] data = services.get(requestmsg.getData()[0]).invoke(RPCUtils.decapsulate(requestmsg.getData()));
 
-		   } catch (Exception e) {
-				e.printStackTrace();
-		   }
+		   // - send back the message containing RPC reply
+
+			replymsg = new Message(RPCUtils.encapsulate(rpcid, data));
+			connection.send(replymsg);
 
 		   // TODO - END
 

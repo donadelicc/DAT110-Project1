@@ -3,9 +3,14 @@ package no.hvl.dat110.rpc;
 import no.hvl.dat110.TODO;
 import no.hvl.dat110.messaging.*;
 
+import java.io.IOException;
+
 public class RPCClient {
 
+	// underlying messaging client used for RPC communication
 	private MessagingClient msgclient;
+
+	// underlying messaging connection used for RPC communication
 	private MessageConnection connection;
 	
 	public RPCClient(String server, int port) {
@@ -13,46 +18,72 @@ public class RPCClient {
 		msgclient = new MessagingClient(server,port);
 	}
 	
-	public void connect() {
-		try {
-			connection = msgclient.connect();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void connect() throws IOException {
+		
+		// TODO - START
+		// connect using the RPC client
+		connection = msgclient.connect();
+		
+		//if (true)
+			//throw new UnsupportedOperationException(TODO.method());
+		
+		// TODO - END
 	}
-
+	
 	public void disconnect() {
-		try {
-			connection.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
+		// TODO - START
+		// disconnect by closing the underlying messaging connection
+
+		connection.close();
+		
+		//if (true)
+			//throw new UnsupportedOperationException(TODO.method());
+		
+		// TODO - END
 	}
 
-	 public byte[] call(byte rpcid, byte[] param) {
+	/*
+	 Make a remote call om the method on the RPC server by sending an RPC request message and receive an RPC reply message
+
+	 rpcid is the identifier on the server side of the method to be called
+	 param is the marshalled parameter of the method to be called
+	 */
+
+	public byte[] call(byte rpcid, byte[] param) {
+		
 		byte[] returnval = null;
+		
+		// TODO - START
 
-		try {
-			byte[] rpcmsg = RPCUtils.encapsulate(rpcid, param);
-			connection.send(new Message(rpcmsg));
-			System.out.println("RPCClient: Message sent. Waiting for reply...");
-	
-			Message msg = connection.receive();
-	
-			if(msg == null) {
-				System.out.println("RPCClient: Received null message.");
-			} else {
-				System.out.println("RPCClient: Message received. Decapsulating...");
-				returnval = RPCUtils.decapsulate(msg.getData());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();    
-		}
+		/*
+
+		The rpcid and param must be encapsulated according to the RPC message format
+
+		The return value from the RPC call must be decapsulated according to the RPC message format
+
+		*/
+
+		byte[] reqData = RPCUtils.encapsulate(rpcid,param);
+
+		Message reqMessage = new Message(reqData);
+
+		connection.send(reqMessage);
+
+		Message resMessage = connection.receive();
+
+		byte[] resData = resMessage.getData();
+
+		returnval = RPCUtils.decapsulate(resData);
+
+
+		//connection.send(new Message(RPCUtils.encapsulate(rpcid,param)));
+
+		//returnval = RPCUtils.decapsulate(connection.receive().getData());
+
+		// TODO - END
 		return returnval;
+		
 	}
-
-	///
-
-	
 
 }

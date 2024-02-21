@@ -32,20 +32,20 @@ public class MessageConnection {
 		}
 	}
 
-	public void send(Message message) {
+	public void send(Message message){
 
-		byte[] data; // data and segment are interchangeable here
-		
 		// TODO - START
 		// encapsulate the data contained in the Message and write to the output stream
-		
-		data = MessageUtils.encapsulate(message);
 
 		try {
-			outStream.write(data);
+			outStream.write(MessageUtils.encapsulate(message));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+
+		//if (true)
+			//throw new UnsupportedOperationException(TODO.method());
 			
 		// TODO - END
 
@@ -54,37 +54,33 @@ public class MessageConnection {
 	public Message receive() {
 
 		Message message = null;
-		byte[] data;
+		byte[] segment = null;
 		
+		// TODO - START
+		// read a segment from the input stream and decapsulate data into a Message
+
+		segment = new byte[MessageUtils.SEGMENTSIZE];
 		try {
-			// Read the first byte to get the message length
-			int length = inStream.read();
-	
-			// Check for end-of-stream condition
-			if (length == -1) {
-				System.out.println("End of stream reached, no more data to read.");
-				// Optionally, throw an exception or handle this case as per your application logic
-			} else if (length > 0) {
-				// Ensure the length is within the expected range
-				data = new byte[length];
-				// Read the message data
-				inStream.readFully(data, 0, length);
-				// Decapsulate the data into a message
-				message = MessageUtils.decapsulate(data);
-			} else {
-				// Handle case where length is not within the valid range
-				System.out.println("Received length is not valid: " + length);
-				// Optionally, throw an exception or handle this case as per your application logic
+			//data = inStream.readAllBytes();
+			for(int i= 0; i < segment.length; i++){
+				segment[i] = inStream.readByte();
 			}
+			// int read = inStream.read(segment,0, MessageUtils.SEGMENTSIZE);
+
 		} catch (IOException e) {
 			e.printStackTrace();
-			// Optionally, handle this exception more gracefully, e.g., by logging or rethrowing as a custom exception
 		}
+
+		message = MessageUtils.decapsulate(segment);
+		
+		//if (true)
+			//throw new UnsupportedOperationException(TODO.method());
+		
+		// TODO - END
 		
 		return message;
 		
 	}
-	
 
 	// close the connection by closing streams and the underlying socket	
 	public void close() {

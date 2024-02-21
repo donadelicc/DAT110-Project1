@@ -6,19 +6,27 @@ public class Message {
 
 	// the up to 127 bytes of data (payload) that a message can hold
 	private byte[] data;
-	private static final int MAXSIZE = 127;
 
 	// construction a Message with the data provided
 	public Message(byte[] data) {
 		
 		// TODO - START
+
 		
-		if (data == null || data.length > MAXSIZE) {
-			throw new IllegalArgumentException("Data cannot be null or exceed 127 bytes");
-		} else {
-			this.data = data;
+		if (data == null){
+
+			throw new IllegalArgumentException("Data cannot be null");
 		}
+		if (data.length > 127){
+
+			throw new IllegalArgumentException("Data cannot be longer than 127 bytes");
+		}
+
 		// TODO - END
+
+
+		this.data = data;
+
 	}
 
 	public byte[] getData() {

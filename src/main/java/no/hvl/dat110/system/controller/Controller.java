@@ -3,12 +3,15 @@ package no.hvl.dat110.system.controller;
 import no.hvl.dat110.TODO;
 import no.hvl.dat110.rpc.RPCClient;
 import no.hvl.dat110.rpc.RPCClientStopStub;
+import no.hvl.dat110.rpc.RPCUtils;
+
+import java.io.IOException;
 
 public class Controller  {
 	
 	private static int N = 5;
 	
-	public static void main (String[] args) {
+	public static void main (String[] args) throws IOException {
 		
 		DisplayStub display;
 		SensorStub sensor;
@@ -30,16 +33,24 @@ public class Controller  {
 		// create local display and sensor stub objects
 		display = new DisplayStub(displayclient);
 		sensor = new SensorStub(sensorclient);
-		// connect to sensor and display RPC servers - using the RPCClients
+
+		// connect to sensor and display RPC servers
+
 		displayclient.connect();
 		sensorclient.connect();
+
 		// read value from sensor using RPC and write to display using RPC
-		
+
+		int value = sensor.read();
+
 		for (int i = 0; i < N; i++) {
-			int temp = sensor.read();
-			display.write("Temperature: " + temp);
+			display.write(String.valueOf(value));
 		}
-		
+
+
+		//byte[] marshallInteger = RPCUtils.marshallInteger(value);
+		//String unmarshallString = RPCUtils.unmarshallString(marshallInteger);
+		//display.write(unmarshallString);
 
 		// TODO - END
 		
