@@ -42,13 +42,8 @@ public class MessageConnection {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-
 		//if (true)
 			//throw new UnsupportedOperationException(TODO.method());
-			
-		// TODO - END
-
 	}
 
 	public Message receive() {
